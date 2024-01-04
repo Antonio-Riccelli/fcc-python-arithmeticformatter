@@ -1,73 +1,62 @@
 def arithmetic_arranger(problems, sol=False):
-  if len(problems) > 5:
-    return 'Error: Too many problems.'
-  newlst = [el.split(" ") for el in problems]
-  num1_lst = [el[0] for el in newlst]
-
-  for el in num1_lst:
-    if el.isdigit() is False:
-        return "Error: Numbers must only contain digits."
-    if len(el) > 4:
-        return "Error: Numbers cannot be more than four digits."
-
-  num2_lst = [el[2] for el in newlst]
-
-  for el in num2_lst:
-    if el.isdigit() is False:
-        return "Error: Numbers must only contain digits."
-    if len(el) > 4:
-        return "Error: Numbers cannot be more than four digits."
-
-  operands = [el[1] for el in newlst]
-
-  for el in operands:
-    if el != "+" and el != "-":
-        return "Error: Operator must be '+' or '-'."
-
   first_line = ""
   second_line = ''
   third_line = ''
   fourth_line = ''
 
+  if len(problems) > 5:
+    return 'Error: Too many problems.'
+
+  split_problems = [el.split(" ") for el in problems]
+
+  for el in split_problems:
+    if el[0].isdigit() is False or el[2].isdigit() is False:
+        return "Error: Numbers must only contain digits."
+    if len(el[0]) > 4 or len(el[2]) > 4:
+        return "Error: Numbers cannot be more than four digits."
+    if el[1] != "+" and el[1] != "-":
+        return "Error: Operator must be '+' or '-'."
+
+  num1_lst = [el[0] for el in split_problems]
+  num2_lst = [el[2] for el in split_problems]
+  operands = [el[1] for el in split_problems]
+
   for x in range(len(problems)):
+    num1_len = len(num1_lst[x])
+    num2_len = len(num2_lst[x])
+
     if x > 0:
         first_line += "    "
-    if len(num1_lst[x]) > len(num2_lst[x]):
+        second_line += '    '
+    if num1_len >= num2_len:
         first_line += "{}{}".format("  ", num1_lst[x])
-    if len(num1_lst[x]) < len(num2_lst[x]):
+    if num1_len < num2_len:
         first_line += "{}{}".format(
-            ' ' * (2 + (len(num2_lst[x]) - len(num1_lst[x]))), num1_lst[x])
-    if (len(num1_lst[x]) == len(num2_lst[x])):
-        first_line += "{}{}".format("  ", num1_lst[x])
+            ' ' * (2 + (num2_len - num1_len)), num1_lst[x])
     if x == len(problems):
         first_line += '\n'
+        second_line += '\n'
+        third_line += '\n'
+
 
     # second line
-    if x > 0:
-        second_line += '    '
-    if len(num2_lst[x]) > len(num1_lst[x]):
+    if num2_len >= num1_len:
         second_line += "{} {}".format(operands[x], num2_lst[x])
-    if len(num2_lst[x]) < len(num1_lst[x]):
-        whitesp = ' ' * (1 + (len(num1_lst[x]) - len(num2_lst[x])))
+    if num2_len < num1_len:
+        whitesp = ' ' * (1 + (num1_len - num2_len))
         second_line += "{}{}{}".format(operands[x], whitesp, num2_lst[x])
-    if len(num2_lst[x]) == len(num1_lst[x]):
-        second_line += "{} {}".format(operands[x], num2_lst[x])
-    if x == len(problems):
-        second_line += '\n'
 
     # third line
-    dashes = "-" * (2 + max([len(x) for x in newlst[x]]))
+    dashes = "-" * (2 + max([len(x) for x in split_problems[x]]))
     third_line += dashes
-    if x == len(problems):
-      third_line += '\n'
-    elif x < len(problems) - 1:
+    if x < len(problems) - 1:
         third_line += "    "
 
     # solution
     if sol is True:
-        num1 = int(newlst[x][0])
-        num2 = int(newlst[x][2])
-        operand = newlst[x][1]
+        num1 = int(split_problems[x][0])
+        num2 = int(split_problems[x][2])
+        operand = split_problems[x][1]
         op_result = 0
         if operand == "+":
           op_result = int(num1 + num2)
